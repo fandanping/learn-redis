@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/jdbc
+	http://www.springframework.org/schema/jdbc/spring-jdbc.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc">
+
+	<!-- 引入配置文件 -->
+	<!--  <context:property-placeholder location="classpath:cache-redis.properties" />-->
+	
+	<!-- 开启缓存注解 -->  
+   <!--  <cache:annotation-driven/>  --> 
+	
+	
+	<!--  redis 集群配置      节点，不需要配全，最少可以只保留一个cluster中的节点信息，运行时，jedis会自动发现其它节点，但是为了防止某个节点挂掉，所以建议配置时，还是多配置几个，保证这一堆节点中，至少有一个能连接上。-->
+	<bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">
+		<constructor-arg index="0">
+			<set>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.73"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.73"></constructor-arg>
+					<constructor-arg index="1" value="7001"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.74"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.74"></constructor-arg>
+					<constructor-arg index="1" value="7001"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.75"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.118.0.75"></constructor-arg>
+					<constructor-arg index="1" value="7001"></constructor-arg>
+				</bean>
+			
+			    <!--<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.50.146.170"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.50.146.171"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>
+				<bean class="redis.clients.jedis.HostAndPort">
+					<constructor-arg index="0" value="10.50.146.172"></constructor-arg>
+					<constructor-arg index="1" value="7000"></constructor-arg>
+				</bean>-->
+			</set>
+		</constructor-arg>
+		<constructor-arg index="1" value="3000"></constructor-arg>
+		<constructor-arg index="2" ref="jedisPoolConfig"></constructor-arg>
+	</bean>
+	
+	<!--jedis连接池配置  -->
+	<bean id="jedisPoolConfig"
+		class="redis.clients.jedis.JedisPoolConfig">
+		<!-- 最大连接数：1000个 -->
+		<property name="maxTotal" value="1000" />
+		<!-- 是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个 -->
+		<property name="testOnBorrow" value="true"></property>
+		<!-- 在return给pool时，是否提前进行validate操作； -->
+		<property name="testOnReturn" value="true"></property>
+		<!-- 最大空闲连接数：200 --> 
+		<property name="maxIdle" value="200" />
+		<!-- 获取连接时的最大等待毫秒数(如果设置为阻塞时BlockWhenExhausted),如果超时就抛异常-->
+		<property name="maxWaitMillis" value="1500" />
+	</bean>	
+	
+	
+	<bean id="abstractRedisCache" class="com.neusoft.neusipo.components.redis.AbstractRedisCache" abstract="true">
+		<property name="jedisCluster" ref="jedisCluster"></property>
+	</bean>
+	
+  <!-- <bean id="user.menuCacheServiceImpl" class="" parent="abstractRedisCache"></bean> --> 
+	
+	
+
+
+</beans>

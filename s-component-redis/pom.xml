@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>s-master</artifactId>
+    <groupId>com.neusoft.neusipo</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.neusoft.neusipo</groupId>
+  <artifactId>s-component-redis</artifactId>
+  <version>0.0.1</version>
+  <name>s-component-redis</name>
+  <url>http://maven.apache.org</url>
+ <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.springframework.version>4.3.6.RELEASE</org.springframework.version>
+		<commons.lang.version>2.6</commons.lang.version>
+  </properties>
+  <dependencies>
+   
+		<!-- ******************Neusoft Config Start****************** -->
+		<!-- redis cache  related start  fandp-->
+		<dependency>  
+            <groupId>org.springframework.data</groupId>  
+            <artifactId>spring-data-redis</artifactId>  
+            <version>1.6.0.RELEASE</version>  
+        </dependency> 
+        <dependency>  
+           <groupId>redis.clients</groupId>  
+           <artifactId>jedis</artifactId>  
+           <version>2.7.3</version>  
+        </dependency> 
+   
+		
+        <!-- redis cache related end fandp-->
+		<!-- ******************Neusoft Config End****************** -->
+		<!-- ******************Spring Config Start****************** -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<!-- ******************Spring Config End****************** -->
+		<!-- ******************Others Config Start****************** -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
+		</dependency>
+		<!-- ******************Others Config End****************** -->
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+        	<groupId>com.google.code.gson</groupId>
+        	<artifactId>gson</artifactId>
+        	<version>2.3.1</version>
+       </dependency>
+		
+	</dependencies>
+	<build>
+		<finalName>s-component-redis</finalName>
+		<resources>
+			<resource>
+				<targetPath>${project.build.directory}/classes</targetPath>
+				<directory>src/main/resources/properties</directory>
+				<filtering>true</filtering>
+				<includes>
+					<!-- Provider的属性配置文件 -->
+					<include>**/*.config</include>
+					<include>**/*.ini</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<!-- 结合com.alibaba.dubbo.container.Main -->
+			<resource>
+				<targetPath>${project.build.directory}/classes/META-INF/spring</targetPath>
+				<directory>src/main/resources/spring</directory>
+				<filtering>true</filtering>
+				<includes>
+					<!-- Provider容器的启动上下文配置文件：此配置属性为容器级，个性应用的配置通过引用配置方式引入 -->
+					<include>spring-context.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<targetPath>${project.build.directory}/classes</targetPath>
+				<directory>src/main/resources/spring</directory>
+				<filtering>true</filtering>
+				<includes>
+					<!--
+						加载本Provider的Bean初始化配置，一般约定有两个：datasource-app.xml,
+						provider_name-app.xml
+					-->
+					<include>**/*app*.xml</include>
+					<include>**/*provider*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!-- 解决Maven插件在Eclipse内执行了一系列的生命周期引起冲突 -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
